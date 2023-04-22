@@ -2,6 +2,7 @@ export default function Contacts({ contacts, onDeleteClick }) {
   return (
     <>
       <h2>Contacts</h2>
+      <p>help</p>
       <ul>
         {contacts.map(({ name, id, number }) => (
           <li key={id}>
