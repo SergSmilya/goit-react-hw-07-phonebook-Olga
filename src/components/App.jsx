@@ -2,31 +2,23 @@ import { useEffect, useState } from 'react';
 import Contacts from './Contacts/Contacts';
 import Filter from './Filter/Filter';
 import Input from './Input/Input';
-
-const baseContacts = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
+import { fetchContacts } from 'Api';
+import { useSelector, useDispatch } from 'react-redux';
 
 export function App() {
-  const parsedData = JSON.parse(localStorage.getItem('contacts'));
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.items);
+  console.log(contacts);
 
-  const [contacts, setContacts] = useState(parsedData ?? baseContacts);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   fetchContacts();
+  // }, []);
 
-  function updateState(values) {
-    setContacts(prev => [...prev, values]);
-  }
-
-  function onDeleteClick(id) {
-    setContacts(prev => prev.filter(ob => ob.id !== id));
-  }
+  // function updateState(values) {
+  //   setContacts(prev => [...prev, values]);
+  // }
 
   function checkName(name) {
     return contacts.find(ob => name === ob.name);
@@ -53,11 +45,11 @@ export function App() {
     >
       <h1>Phonebook</h1>
 
-      <Input updateState={updateState} checkName={checkName} />
+      <Input checkName={checkName} />
 
       <Filter onFilterChange={onFilterChange} />
 
-      <Contacts onDeleteClick={onDeleteClick} contacts={onFilter()} />
+      <Contacts contacts={onFilter()} />
     </div>
   );
 }
