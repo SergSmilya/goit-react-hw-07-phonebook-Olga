@@ -4,17 +4,11 @@ const filterSlice = createSlice({
   name: 'filter',
   initialState: '',
   reducers: {
-    increment(state) {
-      state.value++;
-    },
-    decrement(state) {
-      state.value--;
-    },
-    incrementByAmount(state, action) {
-      state.value += action.payload;
+    changeFilter(_, { payload }) {
+      return payload;
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = filterSlice.actions;
+export const { changeFilter } = filterSlice.actions;
 export default filterSlice.reducer;

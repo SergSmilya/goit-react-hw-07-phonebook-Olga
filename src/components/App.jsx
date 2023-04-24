@@ -1,32 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Contacts from './Contacts/Contacts';
 import Filter from './Filter/Filter';
 import Input from './Input/Input';
-import { fetchContacts } from 'Api';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllContacts } from 'Redux/Operations';
 
 export function App() {
-  const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.items);
-  console.log(contacts);
+  const filter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
 
-  const [filter, setFilter] = useState('');
-
-  // useEffect(() => {
-  //   fetchContacts();
-  // }, []);
-
-  // function updateState(values) {
-  //   setContacts(prev => [...prev, values]);
-  // }
-
-  function checkName(name) {
-    return contacts.find(ob => name === ob.name);
-  }
-
-  function onFilterChange(e) {
-    setFilter(e.target.attributes.name.ownerElement.value.toLowerCase());
-  }
+  useEffect(() => {
+    dispatch(fetchAllContacts());
+  }, [dispatch]);
 
   function onFilter() {
     return contacts.filter(({ name }) => name.toLowerCase().includes(filter));
@@ -45,9 +31,9 @@ export function App() {
     >
       <h1>Phonebook</h1>
 
-      <Input checkName={checkName} />
+      <Input />
 
-      <Filter onFilterChange={onFilterChange} />
+      <Filter />
 
       <Contacts contacts={onFilter()} />
     </div>

@@ -1,22 +1,12 @@
-import { deleteContacts } from 'Redux/ContactsSlice';
-import { useDispatch } from 'react-redux';
+import OneContact from 'components/OneContact/OneContact';
 
 export default function Contacts({ contacts }) {
-  const dispatch = useDispatch();
-
   return (
     <>
       <h2>Contacts</h2>
       <ul>
-        {contacts.map(({ name, id, number }) => (
-          <li key={id}>
-            <div>
-              {name}: {number}
-            </div>
-            <button type="button" onClick={() => dispatch(deleteContacts(id))}>
-              Delete
-            </button>
-          </li>
+        {contacts.map(contacts => (
+          <OneContact key={contacts.id} contacts={contacts} />
         ))}
       </ul>
     </>
