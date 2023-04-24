@@ -6,6 +6,7 @@ const initialState = {
   isLoading: false,
   error: null,
 };
+
 const STATUS = {
   PENDING: 'pending',
   FULFILLED: 'fulfilled',
@@ -38,11 +39,9 @@ const contactsSlice = createSlice({
       .addCase(addContacts.fulfilled, (state, action) => {
         state.items.push(action.payload);
       })
-      .addCase(deleteContacts.fulfilled, (state, action) => ({
-        // state.items = state.items.filter(item => item.id !== action.payload);
-        ...state,
-        items: [...state.items.filter(el => el.id !== action.payload)],
-      }))
+      .addCase(deleteContacts.fulfilled, (state, action) => {
+        state.items = state.items.filter(item => item.id !== action.payload.id);
+      })
       .addMatcher(isAnyOf(...thunkMapping(STATUS.FULFILLED)), handleFulfilled)
       .addMatcher(isAnyOf(...thunkMapping(STATUS.REJECTED)), handleRejected)
       .addMatcher(isAnyOf(...thunkMapping(STATUS.PENDING)), handlePending);
