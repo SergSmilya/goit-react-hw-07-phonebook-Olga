@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { fetchAllContacts, addContacts, deleteContacts } from './Operations';
 
 const initialState = {
@@ -6,33 +6,46 @@ const initialState = {
   isLoading: false,
   error: null,
 };
+const STATUS = {
+  PENDING: 'pending',
+  FULFILLED: 'fulfilled',
+  REJECTED: 'rejected',
+};
+const thunkArr = [fetchAllContacts, addContacts, deleteContacts];
+function thunkMapping(status) {
+  return thunkArr.map(el => el[status]);
+}
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+const handleRejected = (state, action) => {
+  state.error = action.payload;
+};
+const handleFulfilled = state => {
+  state.isLoading = false;
+  state.error = null;
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   extraReducers: builder => {
     builder
-      .addCase(fetchAllContacts.pending, (state, action) => {
-        state.isLoading = true;
-      })
       .addCase(fetchAllContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.items = action.payload;
-        state.error = null;
-      })
-      .addCase(fetchAllContacts.rejected, (state, action) => {
-        state.error = action.payload;
       })
       .addCase(addContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.items.push(action.payload);
-        state.error = null;
       })
-      .addCase(deleteContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.items = state.items.filter(item => item.id !== action.payload);
-      });
+      .addCase(deleteContacts.fulfilled, (state, action) => ({
+        // state.items = state.items.filter(item => item.id !== action.payload);
+        ...state,
+        items: [...state.items.filter(el => el.id !== action.payload)],
+      }))
+      .addMatcher(isAnyOf(...thunkMapping(STATUS.FULFILLED)), handleFulfilled)
+      .addMatcher(isAnyOf(...thunkMapping(STATUS.REJECTED)), handleRejected)
+      .addMatcher(isAnyOf(...thunkMapping(STATUS.PENDING)), handlePending);
   },
 });
 

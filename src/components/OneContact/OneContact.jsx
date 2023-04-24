@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 
 export default function OneContact({ contacts }) {
   const dispatch = useDispatch();
-  const { id, name, number } = contacts;
+
+  const { id, name, phone_number } = contacts;
   return (
     <li>
       <div>
-        {name}: {number}
+        {name}: {phone_number}
       </div>
       <button type="button" onClick={() => dispatch(deleteContacts(id))}>
         Delete
